@@ -11,7 +11,14 @@ public class ConsoleInput : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        console.supportRichText =false;
+        for (int i=0;i<=2;i++) {console.text += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";}
+        Canvas.ForceUpdateCanvases();
+        Rglob.GlineCount =console.cachedTextGenerator.lineCount;
+        Debug.Log(Rglob.GlineCount);
+        console.supportRichText=true;
+        consoleInput.ActivateInputField();
+        
     }
 
     // Update is called once per frame
@@ -55,15 +62,21 @@ public class ConsoleInput : MonoBehaviour
         return true;
     }
 
+    bool SendCode(string Order)
+    {
+        console.text += "<color=green>"+Order+"</color>";
+        return true;
+    }
+
     public void SubmitName()
     {
-        if (CheckOrder(consoleInput.text))
+        if (SendCode(consoleInput.text))
         {
             if (console.text.Length > 0)
             {
 
                 string[] tmp = console.text.Split('\n');
-                if (tmp.Length > 12)
+                if (tmp.Length != console.cachedTextGenerator.lineCount)
                 {
                     console.text = "";
                     for (int i = 1; i < tmp.Length; i++)
@@ -88,6 +101,7 @@ public class ConsoleInput : MonoBehaviour
         }
         //Debug.Log(consoleInput.text);
         consoleInput.text = "";
+        consoleInput.ActivateInputField();
     }
 
 }
