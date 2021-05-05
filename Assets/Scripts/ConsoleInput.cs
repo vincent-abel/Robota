@@ -8,17 +8,20 @@ public class ConsoleInput : MonoBehaviour
     public Text console;
     public InputField consoleInput;
     public GameObject Rover;
+    private bool isValidText = false;
     // Start is called before the first frame update
     void Start()
     {
-        console.supportRichText =false;
-        for (int i=0;i<=2;i++) {console.text += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";}
+        console.supportRichText = false;
+        console.text = "";
+        for (int i = 0; i <= 2; i++) { console.text += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; }
         Canvas.ForceUpdateCanvases();
-        Rglob.GlineCount =console.cachedTextGenerator.lineCount;
+        Rglob.GlineCount = console.cachedTextGenerator.lineCount;
         Debug.Log(Rglob.GlineCount);
-        console.supportRichText=true;
+        console.text = "";
+        console.supportRichText = true;
         consoleInput.ActivateInputField();
-        
+
     }
 
     // Update is called once per frame
@@ -30,31 +33,41 @@ public class ConsoleInput : MonoBehaviour
     bool CheckOrder(string Order)
     {
         string[] tmp = Order.Split(' ');
-        int num=0;
+        int num = 0;
 
-        if (tmp.Length > 2 || tmp.Length < 2)
+        if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP")
         {
-            console.text += "Syntax ERROR"+'\n';
-            consoleInput.text="";
-            return false;
+            isValidText = false;
+            return true;
         }
-        if (tmp[0] == "MOVE") 
+        else if (tmp[0] == "MOVE")
         {
+            isValidText = true;
+            if (int.TryParse(tmp[1], out num))
+                Rover.transform.position += Rover.transform.rotation*Vector3.forward*num;
 
-            if (int.TryParse(tmp[1],out num))
-                Rover.transform.position = Rover.transform.position + new Vector3(num,0,0);
-            
-        } 
+        }
         else if (tmp[0] == "ROTATE")
         {
-            if (int.TryParse(tmp[1],out num))
-                Rover.transform.position = Rover.transform.position + new Vector3(num,0,0);
+            isValidText = true;
+            if (int.TryParse(tmp[1], out num))
+                Rover.transform.rotation = Quaternion.Euler(new Vector3(0, num, 0)) * Rover.transform.rotation;
         }
-        else 
+        else if (tmp[0] == "HELP" && tmp.Length < 2)
         {
-            console.text += "WTF are you Doing ?"+'\n';
             consoleInput.text="";
-            return false; 
+            isValidText = true;
+            SubmitString("Welcome in Help !");
+            isValidText = true;
+            SubmitString("MOVE XX");
+            isValidText = true;
+            SubmitString("ROTATE XX");
+            return false;
+        }
+        else
+        {
+            isValidText = false;
+            return true;
         }
 
         Debug.Log(tmp.Length.ToString());
@@ -64,44 +77,72 @@ public class ConsoleInput : MonoBehaviour
 
     bool SendCode(string Order)
     {
-        console.text += "<color=green>"+Order+"</color>";
+        console.text += "<color=green>" + Order + "</color>";
         return true;
     }
 
-    public void SubmitName()
+    bool CheckString(string theString)
     {
-        if (SendCode(consoleInput.text))
+        if (isValidText == true)
         {
-            if (console.text.Length > 0)
+            isValidText = !isValidText;
+            console.text += theString + '\n';
+            consoleInput.text = "";
+            return true;
+
+        }
+        else
+        {
+            console.text += theString + " => <color=red>Syntax Error : type HELP to see help.</color>\n";
+            consoleInput.text = "";
+        }
+        return false;
+    }
+
+    bool SubmitString(string theString)
+    {
+        if (console.text.Length > 0)
+        {
+
+            string[] tmp = console.text.Split('\n');
+            if (tmp.Length >= Rglob.GlineCount)
             {
-
-                string[] tmp = console.text.Split('\n');
-                if (tmp.Length != console.cachedTextGenerator.lineCount)
+                console.text = "";
+                for (int i = 1; i < tmp.Length; i++)
                 {
-                    console.text = "";
-                    for (int i = 1; i < tmp.Length; i++)
-                    {
-                        if (i == tmp.Length - 1)
-                            console.text += tmp[i];
-                        else
-                            console.text += tmp[i] + '\n';
-                    }
-                    console.text += consoleInput.text + '\n';
-                }
-                else
-                {
-                    console.text += consoleInput.text + '\n';
+                    if (i == tmp.Length - 1)
+                        console.text += tmp[i];
+                    else
+                        console.text += tmp[i] + '\n';
                 }
 
+                CheckString(theString);
             }
             else
             {
-                console.text = consoleInput.text + '\n';
+                CheckString(theString);
             }
+
         }
-        //Debug.Log(consoleInput.text);
+        else
+        {
+            CheckString(theString);
+        }
+        return true;
+    }
+
+
+    public void SubmitName()
+    {
+        if (consoleInput.text == "\n" || consoleInput.text == "")
+            return;
+        if (CheckOrder(consoleInput.text))
+        {
+            SubmitString(consoleInput.text);
+        }
         consoleInput.text = "";
         consoleInput.ActivateInputField();
+
     }
 
 }
