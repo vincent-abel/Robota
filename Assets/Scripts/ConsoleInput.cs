@@ -43,7 +43,23 @@ public class ConsoleInput : MonoBehaviour
         else if (tmp[0] == "MOVE")
         {
             isValidText = true;
-            if (int.TryParse(tmp[1], out num))
+            if (tmp[1] == "FORWARD")
+            {
+                Rover.transform.position += Rover.transform.rotation*Vector3.forward;
+            }
+            else if (tmp[1] == "BACK")
+            {
+                Rover.transform.position += Rover.transform.rotation*Vector3.back;
+            }
+            else if (tmp[1] == "LEFT")
+            {
+                Rover.transform.position += Rover.transform.rotation*Vector3.left;
+            }
+            else if (tmp[1] == "RIGHT")
+            {
+                Rover.transform.position += Rover.transform.rotation*Vector3.right;
+            }
+            else if (int.TryParse(tmp[1], out num))
                 Rover.transform.position += Rover.transform.rotation*Vector3.forward*num;
 
         }
