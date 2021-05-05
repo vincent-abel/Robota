@@ -7,7 +7,13 @@ public class ConsoleInput : MonoBehaviour {
     public Text console;
     public InputField consoleInput;
     public GameObject Rover;
+    public int speed=10;
     private bool isValidText = false;
+    private bool isForward = false;
+    private bool isLeft = false;
+    private bool isRight = false;
+    private bool isBack = false;
+
     // Start is called before the first frame update
     void Start() {
         console.supportRichText = false;
@@ -24,6 +30,12 @@ public class ConsoleInput : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (isBack || isForward || isLeft || isRight) {
+            if (isBack) Rover.transform.position += Rover.transform.rotation * Vector3.back*Time.deltaTime*speed;
+            if (isForward) Rover.transform.position += Rover.transform.rotation * Vector3.forward*Time.deltaTime*speed;
+            if (isLeft) Rover.transform.position += Rover.transform.rotation * Vector3.left*Time.deltaTime*speed;
+            if (isRight) Rover.transform.position += Rover.transform.rotation * Vector3.right*Time.deltaTime*speed;
+        }
 
     }
 
@@ -31,20 +43,17 @@ public class ConsoleInput : MonoBehaviour {
         string[] tmp = Order.Split(' ');
         int num = 0;
 
-        if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP") {
+        if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP") {
             isValidText = false;
             return true;
         } else if (tmp[0] == "MOVE") {
             isValidText = true;
-            if (tmp[1] == "FORWARD") {
-                Rover.transform.position += Rover.transform.rotation * Vector3.forward;
-            } else if (tmp[1] == "BACK") {
-                Rover.transform.position += Rover.transform.rotation * Vector3.back;
-            } else if (tmp[1] == "LEFT") {
-                Rover.transform.position += Rover.transform.rotation * Vector3.left;
-            } else if (tmp[1] == "RIGHT") {
-                Rover.transform.position += Rover.transform.rotation * Vector3.right;
-            } else if (int.TryParse(tmp[1], out num))
+            if (tmp[1] == "FORWARD") isForward=true; 
+            else if (tmp[1] == "BACK") isBack=true;
+            else if (tmp[1] == "LEFT") isLeft=true;
+            else if (tmp[1] == "RIGHT") isRight=true;
+            else if (tmp[1] == "STOP") {isForward=isBack=isLeft=isRight=false;}
+            else if (int.TryParse(tmp[1], out num))
                 Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
 
         } else if (tmp[0] == "ROTATE") {
@@ -54,13 +63,17 @@ public class ConsoleInput : MonoBehaviour {
         } else if (tmp[0] == "HELP" && tmp.Length < 2) {
             consoleInput.text = "";
             isValidText = true;
-            SubmitString("Welcome in Help !");
+            SubmitString("<color=blue>Welcome in Help !");
+            isValidText = true;
+            SubmitString("MOVE FORWARD|BACK|RIGHT|LEFT");
             isValidText = true;
             SubmitString("MOVE XX");
             isValidText = true;
-            SubmitString("ROTATE XX");
+            SubmitString("ROTATE XX</color>");
             return false;
-        } else {
+        }
+        else if (tmp[0] == "STOP" && tmp.Length < 2) {isValidText = true;isForward=isBack=isLeft=isRight=false;} 
+        else {
             isValidText = false;
             return true;
         }
