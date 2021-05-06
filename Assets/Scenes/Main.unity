@@ -178,7 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   console: {fileID: 1369980544}
   consoleInput: {fileID: 77040133}
-  Rover: {fileID: 1667662418}
+  Rover: {fileID: 1667662424}
   speed: 10
 --- !u!114 &77040133
 MonoBehaviour:
@@ -372,14 +372,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 335783808}
-  m_LocalRotation: {x: 0.13563845, y: -0, z: -0, w: 0.9907585}
-  m_LocalPosition: {x: 629, y: 205, z: -57}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.2870853, y: -0, z: -0, w: 0.957905}
+  m_LocalPosition: {x: 0.6, y: 9.9, z: -10.7}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 1778232136}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1667662422}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 15.591, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 33.367, y: 0, z: 0}
 --- !u!114 &335783812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -839,7 +839,7 @@ Terrain:
   m_DrawInstanced: 0
   m_DrawTreesAndFoliage: 1
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaterialTemplate: {fileID: 2100000, guid: 4c4be3cb4d097e14d92f19631153e1c0, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -860,7 +860,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1369980543
 GameObject:
@@ -954,6 +954,7 @@ GameObject:
   - component: {fileID: 1667662420}
   - component: {fileID: 1667662419}
   - component: {fileID: 1667662423}
+  - component: {fileID: 1667662424}
   m_Layer: 0
   m_Name: rover
   m_TagString: Untagged
@@ -993,7 +994,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4c4be3cb4d097e14d92f19631153e1c0, type: 2}
+  - {fileID: 2100000, guid: 40230c2c49f75db4aaabeef1c4373389, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1033,9 +1034,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 740, y: 6.2, z: 503}
   m_LocalScale: {x: 10, y: 10, z: 10}
-  m_Children: []
+  m_Children:
+  - {fileID: 335783811}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1667662423
 Rigidbody:
@@ -1053,6 +1055,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1667662424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667662418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 548fed05f6706654d8f5c27a9bd88890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1778232135
 GameObject:
   m_ObjectHideFlags: 0

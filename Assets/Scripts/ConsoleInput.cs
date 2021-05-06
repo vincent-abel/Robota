@@ -6,13 +6,14 @@ using UnityEngine.UI;
 public class ConsoleInput : MonoBehaviour {
     public Text console;
     public InputField consoleInput;
-    public GameObject Rover;
+    public Rover Rover;
     public int speed=10;
     private bool isValidText = false;
     private bool isForward = false;
     private bool isLeft = false;
     private bool isRight = false;
     private bool isBack = false;
+    Coroutine CorSave;
 
     // Start is called before the first frame update
     void Start() {
@@ -53,13 +54,15 @@ public class ConsoleInput : MonoBehaviour {
             else if (tmp[1] == "LEFT") isLeft=true;
             else if (tmp[1] == "RIGHT") isRight=true;
             else if (tmp[1] == "STOP") {isForward=isBack=isLeft=isRight=false;}
-            else if (int.TryParse(tmp[1], out num))
+            else if (int.TryParse(tmp[1], out num)) 
                 Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
 
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
             if (int.TryParse(tmp[1], out num))
-                Rover.transform.rotation = Quaternion.Euler(new Vector3(0, num, 0)) * Rover.transform.rotation;
+            CorSave = StartCoroutine( Rover.Rotate(new Vector3(0, num, 0), num, 5.0f) );
+            
+               // Rover.transform.rotation = Quaternion.Euler(new Vector3(0, num, 0)) * Rover.transform.rotation;
         } else if (tmp[0] == "HELP" && tmp.Length < 2) {
             consoleInput.text = "";
             isValidText = true;
@@ -72,7 +75,7 @@ public class ConsoleInput : MonoBehaviour {
             SubmitString("ROTATE XX</color>");
             return false;
         }
-        else if (tmp[0] == "STOP" && tmp.Length < 2) {isValidText = true;isForward=isBack=isLeft=isRight=false;} 
+        else if (tmp[0] == "STOP" && tmp.Length < 2) {isValidText = true;isForward=isBack=isLeft=isRight=false;StopCoroutine(CorSave);} 
         else {
             isValidText = false;
             return true;
