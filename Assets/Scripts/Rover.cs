@@ -45,6 +45,7 @@ public class Rover : MonoBehaviour {
         }
         moving = false;
     }
+    /// Override of Move with 2 parameters, Move / Rotating
     public IEnumerator Move(int num, float duration) {
         moving = true;
         float elapsed = 0.0f;
