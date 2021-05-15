@@ -10,36 +10,37 @@ public class Rover : MonoBehaviour {
     public bool isBack = false;
     public bool moving = false;
     public bool rotating = false;
+    public GameObject ORover;
     // Start is called before the first frame update
 
 
     public IEnumerator Rotate(Vector3 axis, float angle, float duration = 1.0f) {
         rotating = true;
-        Quaternion from = transform.rotation;
-        Quaternion to = transform.rotation;
+        Quaternion from = ORover.transform.rotation;
+        Quaternion to = ORover.transform.rotation;
         //to *= Quaternion.Euler( axis * angle );
         to *= Quaternion.Euler(axis);
 
         float elapsed = 0.0f;
         while (elapsed < duration) {
-            transform.rotation = Quaternion.Slerp(from, to, elapsed / duration);
+            ORover.transform.rotation = Quaternion.Slerp(from, to, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.rotation = to;
+        ORover.transform.rotation = to;
         rotating = false;
     }
 
     public IEnumerator Move(int speed) {
         moving = true;
         while (isBack || isForward || isLeft || isRight) {
-            if (isBack) transform.position = Vector3.Lerp(transform.position, transform.position + transform.rotation * Vector3.back * speed, Time.deltaTime);
-            if (isForward) transform.position = Vector3.Lerp(transform.position, transform.position + transform.rotation * Vector3.forward * speed, Time.deltaTime);
+            if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * ORover.transform.forward * speed, Time.deltaTime);
+            if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * -ORover.transform.forward * speed, Time.deltaTime);
             if (isLeft) { StartCoroutine(Rotate(new Vector3(0, -90, 0),-90, 5.0f));
-                transform.position = Vector3.Lerp(transform.position, transform.position + transform.rotation * Vector3.left * speed, Time.deltaTime);
+                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * -ORover.transform.right * speed, Time.deltaTime);
             }
             if (isRight) { StartCoroutine(Rotate(new Vector3(0, 90, 0), 90, 5.0f));
-                transform.position = Vector3.Lerp(transform.position, transform.position + transform.rotation * Vector3.right * speed, Time.deltaTime);
+                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * ORover.transform.right * speed, Time.deltaTime);
             }
             yield return null;
         }
@@ -49,12 +50,12 @@ public class Rover : MonoBehaviour {
     public IEnumerator Move(int num, float duration) {
         moving = true;
         float elapsed = 0.0f;
-        Vector3 to = transform.position + transform.rotation * Vector3.forward * num;
-        Vector3 from = transform.position;
+        Vector3 to = ORover.transform.position + ORover.transform.rotation * ORover.transform.forward * num;
+        Vector3 from = ORover.transform.position;
         while ((isBack || isForward || isLeft || isRight) && (elapsed < duration)) {
-            if (isBack || isForward) transform.position = Vector3.Slerp(from, to,  elapsed / duration);
-            if (isLeft) transform.position = Vector3.Slerp(from, to,  elapsed / duration);
-            if (isRight) transform.position = Vector3.Slerp(from, to,  elapsed / duration);
+            if (isBack || isForward) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
+            if (isLeft) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
+            if (isRight) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
              elapsed += Time.deltaTime;
             yield return null;
         }

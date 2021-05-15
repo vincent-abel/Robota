@@ -14,6 +14,10 @@ public class ConsoleInput : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        if (RenderSettings.skybox.HasProperty("_Tint"))
+            RenderSettings.skybox.SetColor("_Tint", Color.red);
+        else if (RenderSettings.skybox.HasProperty("_SkyTint"))
+            RenderSettings.skybox.SetColor("_SkyTint", Color.red);
         console.supportRichText = false;
         console.text = "";
         for (int i = 0; i <= 2; i++) { console.text += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; }
@@ -52,13 +56,13 @@ public class ConsoleInput : MonoBehaviour {
             } else if (int.TryParse(tmp[1], out num)) {
                 Rover.isForward = true;
                 if (Rover.moving) StopCoroutine(CorMovSave);
-                CorMovSave = StartCoroutine(Rover.Move(num,5.0f));
+                CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
             }
             if (Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) {
-            CorMovSave = StartCoroutine(Rover.Move(speed));
-        }
+                CorMovSave = StartCoroutine(Rover.Move(speed));
+            }
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
             if (int.TryParse(tmp[1], out num)) {
