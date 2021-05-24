@@ -34,13 +34,13 @@ public class Rover : MonoBehaviour {
     public IEnumerator Move(int speed) {
         moving = true;
         while (isBack || isForward || isLeft || isRight) {
-            if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * ORover.transform.forward * speed, Time.deltaTime);
-            if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * -ORover.transform.forward * speed, Time.deltaTime);
+            if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.forward * speed, Time.deltaTime);
+            if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position +  -ORover.transform.forward * speed, Time.deltaTime);
             if (isLeft) { StartCoroutine(Rotate(new Vector3(0, -90, 0),-90, 5.0f));
-                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * -ORover.transform.right * speed, Time.deltaTime);
+                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.right * speed, Time.deltaTime);
             }
             if (isRight) { StartCoroutine(Rotate(new Vector3(0, 90, 0), 90, 5.0f));
-                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.rotation * ORover.transform.right * speed, Time.deltaTime);
+                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.right * speed, Time.deltaTime);
             }
             yield return null;
         }
@@ -50,13 +50,13 @@ public class Rover : MonoBehaviour {
     public IEnumerator Move(int num, float duration) {
         moving = true;
         float elapsed = 0.0f;
-        Vector3 to = ORover.transform.position + ORover.transform.rotation * ORover.transform.forward * num;
+        Vector3 to = ORover.transform.position + /*ORover.transform.rotation **/ ORover.transform.forward * num;
         Vector3 from = ORover.transform.position;
         while ((isBack || isForward || isLeft || isRight) && (elapsed < duration)) {
             if (isBack || isForward) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
-            if (isLeft) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
+            /*if (isLeft) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
             if (isRight) ORover.transform.position = Vector3.Slerp(from, to,  elapsed / duration);
-             elapsed += Time.deltaTime;
+             elapsed += Time.deltaTime;*/
             yield return null;
         }
         moving = false;

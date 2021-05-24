@@ -44,14 +44,14 @@ public class ConsoleInput : MonoBehaviour {
             return true;
         } else if (tmp[0] == "MOVE") {
             isValidText = true;
-            if (tmp[1] == "FORWARD") Rover.isForward = true;
-            else if (tmp[1] == "BACK") Rover.isBack = true;
-            else if (tmp[1] == "LEFT") Rover.isLeft = true;
-            else if (tmp[1] == "RIGHT") Rover.isRight = true;
+            if (tmp[1] == "FORWARD") {Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false;}
+            else if (tmp[1] == "BACK") {Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false;}
+            else if (tmp[1] == "LEFT") {Rover.isLeft = true; Rover.isBack = Rover.isForward = Rover.isRight = false; }
+            else if (tmp[1] == "RIGHT") {Rover.isRight = true; Rover.isBack = Rover.isForward = Rover.isLeft = false; }
             else if (tmp[1] == "STOP") {
                 Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
-                if (Rover.rotating) StopCoroutine(CorRotSave);
-                if (Rover.moving) StopCoroutine(CorMovSave);
+                if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave);
+                if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
                 return true;
             } else if (int.TryParse(tmp[1], out num)) {
                 Rover.isForward = true;
@@ -59,12 +59,14 @@ public class ConsoleInput : MonoBehaviour {
                 CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
-            }
+            } else { isValidText = false; return true; }
             if (Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) {
                 CorMovSave = StartCoroutine(Rover.Move(speed));
             }
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
+            if (Rover.rotating && CorRotSave != null)
+                StopCoroutine(CorRotSave);
             if (int.TryParse(tmp[1], out num)) {
                 CorRotSave = StartCoroutine(Rover.Rotate(new Vector3(0, num, 0), num, 5.0f));
                 return true;
@@ -79,13 +81,18 @@ public class ConsoleInput : MonoBehaviour {
             isValidText = true;
             SubmitString("MOVE XX");
             isValidText = true;
+            SubmitString("MOVE STOP");
+            isValidText = true;
+            SubmitString("STOP");
+                        isValidText = true;
             SubmitString("ROTATE XX</color>");
             return false;
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
             isValidText = true;
             Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
-            if (Rover.rotating) StopCoroutine(CorRotSave); CorRotSave = null;
-            if (Rover.moving) StopCoroutine(CorMovSave); CorMovSave = null;
+            if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave); CorRotSave = null;
+            if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave); CorMovSave = null;
+            return true;
         } else {
             isValidText = false;
             return true;
@@ -140,8 +147,9 @@ public class ConsoleInput : MonoBehaviour {
     public void SubmitName() {
         if (consoleInput.text == "\n" || consoleInput.text == "")
             return;
-        if (CheckOrder(consoleInput.text)) {
-            SubmitString(consoleInput.text);
+        
+        if (CheckOrder(consoleInput.text.ToUpper())) {
+            SubmitString(consoleInput.text.ToUpper());
         }
         consoleInput.text = "";
         consoleInput.ActivateInputField();
