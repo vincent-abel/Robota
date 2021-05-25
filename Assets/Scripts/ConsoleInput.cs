@@ -38,7 +38,7 @@ public class ConsoleInput : MonoBehaviour {
     bool CheckOrder(string Order) {
         string[] tmp = Order.Split(' ');
         int num = 0;
-
+        Debug.Log(string.Join(",",tmp));
         if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP") {
             isValidText = false;
             return true;
@@ -52,6 +52,7 @@ public class ConsoleInput : MonoBehaviour {
                 Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
                 if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave);
                 if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
+                Rover.StopAnim();
                 return true;
             } else if (int.TryParse(tmp[1], out num)) {
                 Rover.isForward = true;
@@ -59,7 +60,7 @@ public class ConsoleInput : MonoBehaviour {
                 CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
-            } else { isValidText = false; return true; }
+            } else { isValidText = false; Debug.Log("Shouldn't be here"); return true; }
             if (Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) {
                 CorMovSave = StartCoroutine(Rover.Move(speed));
             }
@@ -92,6 +93,7 @@ public class ConsoleInput : MonoBehaviour {
             Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
             if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave); CorRotSave = null;
             if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave); CorMovSave = null;
+            Rover.StopAnim();
             return true;
         } else {
             isValidText = false;
