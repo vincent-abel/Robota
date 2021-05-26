@@ -32,43 +32,41 @@ public class ConsoleInput : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
+        if (!consoleInput.isFocused && !StaticVar.gameIsPaused) consoleInput.ActivateInputField();
     }
 
     bool CheckOrder(string Order) {
         string[] tmp = Order.Split(' ');
-        int num = 0;
-        Debug.Log(string.Join(",",tmp));
+        float num = 0.0f;
+        Debug.Log(string.Join(",", tmp));
         if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP") {
             isValidText = false;
             return true;
         } else if (tmp[0] == "MOVE") {
             isValidText = true;
-            if (tmp[1] == "FORWARD") {Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false;}
-            else if (tmp[1] == "BACK") {Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false;}
-            else if (tmp[1] == "LEFT") {Rover.isLeft = true; Rover.isBack = Rover.isForward = Rover.isRight = false; }
-            else if (tmp[1] == "RIGHT") {Rover.isRight = true; Rover.isBack = Rover.isForward = Rover.isLeft = false; }
-            else if (tmp[1] == "STOP") {
+            if (tmp[1] == "FORWARD") { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "BACK") { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "LEFT") { Rover.isLeft = true; Rover.isBack = Rover.isForward = Rover.isRight = false; } else if (tmp[1] == "RIGHT") { Rover.isRight = true; Rover.isBack = Rover.isForward = Rover.isLeft = false; } else if (tmp[1] == "STOP") {
                 Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
                 if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave);
                 if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
                 Rover.StopAnim();
                 return true;
-            } else if (int.TryParse(tmp[1], out num)) {
-                Rover.isForward = true;
-                if (Rover.moving) StopCoroutine(CorMovSave);
+            } else if (float.TryParse(tmp[1], out num)) {
+                if (num > 0) { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; }
+                if (num < 0) { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; }
+
+                if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
                 CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
             } else { isValidText = false; Debug.Log("Shouldn't be here"); return true; }
-            if (Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) {
-                CorMovSave = StartCoroutine(Rover.Move(speed));
+            if ((Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) && Rover.moving == false) {
+                CorMovSave = StartCoroutine(Rover.Move());
             }
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
             if (Rover.rotating && CorRotSave != null)
                 StopCoroutine(CorRotSave);
-            if (int.TryParse(tmp[1], out num)) {
+            if (float.TryParse(tmp[1], out num)) {
                 CorRotSave = StartCoroutine(Rover.Rotate(new Vector3(0, num, 0), num, 5.0f));
                 return true;
             }
@@ -85,7 +83,7 @@ public class ConsoleInput : MonoBehaviour {
             SubmitString("MOVE STOP");
             isValidText = true;
             SubmitString("STOP");
-                        isValidText = true;
+            isValidText = true;
             SubmitString("ROTATE XX</color>");
             return false;
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
@@ -147,15 +145,16 @@ public class ConsoleInput : MonoBehaviour {
 
 
     public void SubmitName() {
-        if (consoleInput.text == "\n" || consoleInput.text == "")
-            return;
-        
-        if (CheckOrder(consoleInput.text.ToUpper())) {
-            SubmitString(consoleInput.text.ToUpper());
-        }
-        consoleInput.text = "";
-        consoleInput.ActivateInputField();
+        if (!StaticVar.gameIsPaused) {
+            if (consoleInput.text == "\n" || consoleInput.text == "")
+                return;
 
+            if (CheckOrder(consoleInput.text.ToUpper())) {
+                SubmitString(consoleInput.text.ToUpper());
+            }
+            consoleInput.text = "";
+            consoleInput.ActivateInputField();
+        } 
     }
 
 }

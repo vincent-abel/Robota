@@ -9,6 +9,9 @@ public class StaticVar
     public static GameObject CamO {get; private set;}
     public static GameObject LightO {get; private set;}
     public static float Volume {get; private set;}
+    public static bool gameIsPaused;
+    public static Coroutine CorMovSave;
+    public static Coroutine CorRotSave;
 
     public static void Init(Transform Main)
     {

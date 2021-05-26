@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MenuButtons : MonoBehaviour
 {
-
+    
     public void goToMain() 
     {
         SceneManager.LoadScene("Main", LoadSceneMode.Single);
@@ -22,5 +22,10 @@ public class MenuButtons : MonoBehaviour
         StaticVar.SetVolume(slider.value);
     }
 
-    
+    public void Resume(UIManager UIMan)
+    {
+        
+        
+        UIMan.ResumeGame();
+    }    
 }
