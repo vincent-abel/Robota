@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[System.Serializable]
 public class Rover : MonoBehaviour {
 
-    public bool isForward = false;
-    public bool isLeft = false;
-    public bool isRight = false;
-    public bool isBack = false;
-    public bool moving = false;
-    public bool rotating = false;
+    [SerializeField] public bool isForward = false;
+    [SerializeField] public bool isLeft = false;
+    [SerializeField] public bool isRight = false;
+    [SerializeField] public bool isBack = false;
+    [SerializeField] public bool moving = false;
+    [SerializeField] public bool rotating = false;
     public int speed = 10;
-    public GameObject ORover;
+    [SerializeField] public GameObject ORover;
     // Start is called before the first frame update
 
     private void Awake() {
@@ -25,40 +25,48 @@ public class Rover : MonoBehaviour {
 
     public IEnumerator Rotate(Vector3 axis, float angle, float duration = 1.0f) {
         rotating = true;
-        StartAnim();
+        if (!moving) StartAnim();
         Quaternion from = ORover.transform.rotation;
         Quaternion to = ORover.transform.rotation;
 
         to *= Quaternion.Euler(axis);
-
         float elapsed = 0.0f;
-        while (elapsed < duration) {
 
+        while ((isLeft || isRight ) && (elapsed < duration)) {
+            if (Rglob.gameIsPaused) { yield return null; }
             ORover.transform.rotation = Quaternion.Slerp(from, to, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
         ORover.transform.rotation = to;
-        rotating = false;
-        StopAnim();
+        rotating = isLeft = isRight = false;
+        Rglob.CorRotSave = null;
+        if (!moving) StopAnim();
+    }
+
+    public void Rotate() {
+        Debug.Log("In the rotate");
+        if (isLeft) {
+            if (Rglob.CorRotSave == null) {
+                Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, -90, 0), -90, 5.0f));
+            }
+        }
+        if (isRight) {
+            if (Rglob.CorRotSave == null) {
+                Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, 90, 0), 90, 5.0f));
+            }
+        }
     }
 
     public IEnumerator Move() {
         moving = true;
         StartAnim();
-        while (isBack || isForward || isLeft || isRight) {
+        while (isBack || isForward) {
             if (!Rglob.gameIsPaused) { Debug.Log("Catch Them All"); }
             if (Rglob.gameIsPaused) { yield return null; }
             if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.forward * speed, Time.deltaTime);
             if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.forward * speed, Time.deltaTime);
-            if (isLeft) {
-                if (Rglob.CorRotSave == null) { isRight = false; Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, -90, 0), -90, 5.0f)); }
-                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.forward * speed, Time.deltaTime);
-            }
-            if (isRight) {
-                if (Rglob.CorRotSave == null) { isRight = false; Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, 90, 0), 90, 5.0f)); }
-                ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.forward * speed, Time.deltaTime);
-            }
+
             yield return null;
         }
         moving = false;
@@ -75,7 +83,8 @@ public class Rover : MonoBehaviour {
         Vector3 to = ORover.transform.position + -ORover.transform.forward * speed;
         Vector3 from = ORover.transform.position;
         Debug.Log("back: " + isBack + " forward: " + isForward);
-        while ((isBack || isForward || isLeft || isRight) && (elapsed < num)) {
+        while ((isBack || isForward) && (elapsed < num)) {
+            if (Rglob.gameIsPaused) { yield return null; }
             if (Rglob.gameIsPaused) { yield return new WaitForSecondsRealtime(0.1f); }
             ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.forward * speed, Time.deltaTime);
             elapsed += Time.deltaTime;

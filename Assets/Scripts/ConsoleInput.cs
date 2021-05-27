@@ -43,28 +43,43 @@ public class ConsoleInput : MonoBehaviour {
             return true;
         } else if (tmp[0] == "MOVE") {
             isValidText = true;
-            if (tmp[1] == "FORWARD") { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "BACK") { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "LEFT") { Rover.isLeft = true; Rover.isBack = Rover.isForward = Rover.isRight = false; } else if (tmp[1] == "RIGHT") { Rover.isRight = true; Rover.isBack = Rover.isForward = Rover.isLeft = false; } else if (tmp[1] == "STOP") {
+            if (tmp[1] == "FORWARD") { Rover.isForward = true; Rover.isBack = false; } 
+            else if (tmp[1] == "BACK") { Rover.isBack = true; Rover.isForward = false; } 
+            else if (tmp[1] == "LEFT") { Rover.isLeft = true; Rover.isRight = false; } 
+            else if (tmp[1] == "RIGHT") { Rover.isRight = true; Rover.isLeft = false; }
+             else if (tmp[1] == "STOP") {
                 Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
                 if (Rover.rotating && Rglob.CorRotSave != null) StopCoroutine(Rglob.CorRotSave);
                 if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave);
                 Rover.StopAnim();
+                Rglob.CorRotSave=Rglob.CorMovSave=null;
                 return true;
             } else if (float.TryParse(tmp[1], out num)) {
-                if (num > 0) { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; }
-                if (num < 0) { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; }
+                if (num > 0) { Rover.isForward = true; Rover.isBack = false; }
+                if (num < 0) { Rover.isBack = true; Rover.isForward = false; }
 
-                if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave);
+                if (Rover.moving && Rglob.CorMovSave != null) { StopCoroutine(Rglob.CorMovSave); Rglob.CorMovSave=null;}
                 Rglob.CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
             } else { isValidText = false; Debug.Log("Shouldn't be here"); return true; }
-            if ((Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) && Rover.moving == false) {
+            if ((Rover.isBack || Rover.isForward) && Rover.moving == false) {
                 Rglob.CorMovSave = StartCoroutine(Rover.Move());
+            }
+            if ((Rover.isLeft || Rover.isRight)) {
+                if (Rglob.CorRotSave != null) {
+                    Rover.StopCoroutine(Rglob.CorRotSave);
+                    Rglob.CorRotSave= null;
+                }
+
+                Rover.Rotate();
             }
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
-            if (Rover.rotating && Rglob.CorRotSave != null)
+            if (Rover.rotating && Rglob.CorRotSave != null) {
                 StopCoroutine(Rglob.CorRotSave);
+                Rglob.CorRotSave=null;
+            }
             if (float.TryParse(tmp[1], out num)) {
                 Rglob.CorRotSave = StartCoroutine(Rover.Rotate(new Vector3(0, num, 0), num, 5.0f));
                 return true;
@@ -88,8 +103,12 @@ public class ConsoleInput : MonoBehaviour {
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
             isValidText = true;
             Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
-            if (Rover.rotating && Rglob.CorRotSave != null) StopCoroutine(Rglob.CorRotSave); Rglob.CorRotSave = null;
-            if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave); Rglob.CorMovSave = null;
+            if (Rover.rotating && Rglob.CorRotSave != null)
+                StopCoroutine(Rglob.CorRotSave);
+            Rglob.CorRotSave = null;
+            if (Rover.moving && Rglob.CorMovSave != null)
+                StopCoroutine(Rglob.CorMovSave);
+            Rglob.CorMovSave = null;
             Rover.StopAnim();
             return true;
         } else {
@@ -153,7 +172,7 @@ public class ConsoleInput : MonoBehaviour {
             }
             consoleInput.text = "";
             consoleInput.ActivateInputField();
-        } 
+        }
     }
 
 }

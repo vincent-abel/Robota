@@ -7,6 +7,7 @@ public class Rglob {
     public static bool gameIsPaused;
     public static Coroutine CorMovSave;
     public static Coroutine CorRotSave;
+    public static Coroutine CorRotWrapper;
 
 
 }
