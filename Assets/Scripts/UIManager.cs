@@ -4,52 +4,80 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
-    GameObject PauseCanvas;
-    Canvas MainCanvas;
-    Rover Rover;
+    Hashtable UIList = new Hashtable();
     InputField InputField;
 
-    // Start is called before the first frame update
+
     void Start() {
-        PauseCanvas = GameObject.Find("PauseCanvas").gameObject;
-        MainCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        Rover = GameObject.Find("Main").GetComponent<Rover>();
+        /* Here you all CanvasGroup goes to the main Hashtable */
+        UIList.Add("Pause", GameObject.Find("Pause").GetComponent<CanvasGroup>());
+        UIList.Add("Main", GameObject.Find("MainCanvas").GetComponent<CanvasGroup>());
+        UIList.Add("Obj", GameObject.Find("ObjCanvas").GetComponent<CanvasGroup>());
+        
+        /* The inputfield we need to activate / deactivate when flippings UIs. */
         InputField = GameObject.Find("InputField").GetComponent<InputField>();
-        PauseCanvas.SetActive(false);
-        MainCanvas.enabled = true;
+
+        /* Not very proper but good enough to initialize this here. */
+        Rglob.instructionText = GameObject.Find("InstructionText").GetComponent<Text>();
+        Rglob.InstructionsCount = 0;
     }
 
-    void flipActive()
-    {
-        PauseCanvas.SetActive(!PauseCanvas.activeSelf);
-        MainCanvas.enabled = !MainCanvas.enabled;
-        InputField.enabled = !InputField.enabled;
+    void Manager(string value) {
+        if (value == "Main") {
+            // Do Main Thingies;
+        }
+        if (value == "Pause") {
+            if (Rglob.gameIsPaused) {                           // Unpausing Game
+                Rglob.gameIsPaused = false;
+                PauseUnpause();
+                ((CanvasGroup)UIList["Pause"]).alpha = 0;
+                ((CanvasGroup)UIList["Main"]).alpha = 1;
+                ((CanvasGroup)UIList["Obj"]).alpha = 0;
+            } else {                                            // Pausing Game
+                Rglob.gameIsPaused = true;
+                PauseUnpause();
+                ((CanvasGroup)UIList["Pause"]).alpha = 1;
+                ((CanvasGroup)UIList["Main"]).alpha = 0;
+                ((CanvasGroup)UIList["Obj"]).alpha = 0;
+            }
+        }
+        if (value == "Obj") {                                   // Display Objectives
+            if (Rglob.gameIsPaused && (((CanvasGroup)UIList["Obj"]).alpha == 0)) { // IF paused and just sumonned
+                ((CanvasGroup)UIList["Pause"]).alpha = 0;
+                InputField.DeactivateInputField();
+                InputField.text = "";
+                ((CanvasGroup)UIList["Main"]).alpha = 1;
+                ((CanvasGroup)UIList["Obj"]).alpha = 1;
+            } else if (!Rglob.gameIsPaused && (((CanvasGroup)UIList["Obj"]).alpha == 0)) { // or jusst summon but Pause wasn't enforced
+                Rglob.gameIsPaused = true;
+                PauseUnpause();
+                InputField.DeactivateInputField();
+                InputField.text = "";
+                ((CanvasGroup)UIList["Main"]).alpha = 1;
+                ((CanvasGroup)UIList["Obj"]).alpha = 1;
+            } else if (Rglob.gameIsPaused && (((CanvasGroup)UIList["Obj"]).alpha == 1)) { //Otherwise Just unpause and leave
+                Rglob.gameIsPaused = false;
+                PauseUnpause();
+                InputField.ActivateInputField();
+                ((CanvasGroup)UIList["Obj"]).alpha = 0;
+            }
+        }
     }
+
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            Rglob.gameIsPaused = !Rglob.gameIsPaused;
-            PauseGame();
-           
-        }
+        if (Input.GetKeyDown(KeyCode.Escape)) Manager("Pause");
+        if (Input.GetKeyDown(KeyCode.F1)) Manager("Obj");
     }
-    public void ResumeGame() {
-        
+    public void ResumeGame() => Manager("Pause");
+    public void PauseGame() => Manager("Pause");
+    public void ObjPanel() => Manager("Obj");
+    public void MainPanel() => Manager("Main");
+
+    void PauseUnpause() {
         if (Rglob.gameIsPaused) {
-            Rglob.gameIsPaused = !Rglob.gameIsPaused;
-            Debug.Log("In Resume : GamePause ="+Rglob.gameIsPaused);
-            PauseGame();
-        }
-    }
-    void PauseGame() {
-         flipActive();
-        if (Rglob.gameIsPaused) {
-          /*  Rover.ResetState();
-                
-            StopAllCoroutines();*/
             Time.timeScale = 0;
         } else {
-            Debug.Log("In PAuse : TimeScale set to 1");
             Time.timeScale = 1;
         }
     }

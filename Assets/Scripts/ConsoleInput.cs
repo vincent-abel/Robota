@@ -123,6 +123,7 @@ public class ConsoleInput : MonoBehaviour {
                 return;
 
             if (CheckOrder(consoleInput.text.ToUpper())) {
+                Rglob.InstructionsCount++;
                 SubmitString(consoleInput.text.ToUpper());
             }
             consoleInput.text = "";
