@@ -9,8 +9,7 @@ public class ConsoleInput : MonoBehaviour {
     public Rover Rover;
     public int speed = 10;
     private bool isValidText = false;
-    Coroutine CorMovSave;
-    Coroutine CorRotSave;
+
 
     // Start is called before the first frame update
     void Start() {
@@ -32,7 +31,7 @@ public class ConsoleInput : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!consoleInput.isFocused && !StaticVar.gameIsPaused) consoleInput.ActivateInputField();
+        if (!consoleInput.isFocused && !Rglob.gameIsPaused) consoleInput.ActivateInputField();
     }
 
     bool CheckOrder(string Order) {
@@ -46,28 +45,28 @@ public class ConsoleInput : MonoBehaviour {
             isValidText = true;
             if (tmp[1] == "FORWARD") { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "BACK") { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; } else if (tmp[1] == "LEFT") { Rover.isLeft = true; Rover.isBack = Rover.isForward = Rover.isRight = false; } else if (tmp[1] == "RIGHT") { Rover.isRight = true; Rover.isBack = Rover.isForward = Rover.isLeft = false; } else if (tmp[1] == "STOP") {
                 Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
-                if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave);
-                if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
+                if (Rover.rotating && Rglob.CorRotSave != null) StopCoroutine(Rglob.CorRotSave);
+                if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave);
                 Rover.StopAnim();
                 return true;
             } else if (float.TryParse(tmp[1], out num)) {
                 if (num > 0) { Rover.isForward = true; Rover.isBack = Rover.isLeft = Rover.isRight = false; }
                 if (num < 0) { Rover.isBack = true; Rover.isForward = Rover.isLeft = Rover.isRight = false; }
 
-                if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave);
-                CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
+                if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave);
+                Rglob.CorMovSave = StartCoroutine(Rover.Move(num, 5.0f));
                 //Rover.transform.position += Rover.transform.rotation * Vector3.forward * num;
                 return true;
             } else { isValidText = false; Debug.Log("Shouldn't be here"); return true; }
             if ((Rover.isBack || Rover.isForward || Rover.isLeft || Rover.isRight) && Rover.moving == false) {
-                CorMovSave = StartCoroutine(Rover.Move());
+                Rglob.CorMovSave = StartCoroutine(Rover.Move());
             }
         } else if (tmp[0] == "ROTATE") {
             isValidText = true;
-            if (Rover.rotating && CorRotSave != null)
-                StopCoroutine(CorRotSave);
+            if (Rover.rotating && Rglob.CorRotSave != null)
+                StopCoroutine(Rglob.CorRotSave);
             if (float.TryParse(tmp[1], out num)) {
-                CorRotSave = StartCoroutine(Rover.Rotate(new Vector3(0, num, 0), num, 5.0f));
+                Rglob.CorRotSave = StartCoroutine(Rover.Rotate(new Vector3(0, num, 0), num, 5.0f));
                 return true;
             }
             // Rover.transform.rotation = Quaternion.Euler(new Vector3(0, num, 0)) * Rover.transform.rotation;
@@ -89,8 +88,8 @@ public class ConsoleInput : MonoBehaviour {
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
             isValidText = true;
             Rover.isForward = Rover.isBack = Rover.isLeft = Rover.isRight = false;
-            if (Rover.rotating && CorRotSave != null) StopCoroutine(CorRotSave); CorRotSave = null;
-            if (Rover.moving && CorMovSave != null) StopCoroutine(CorMovSave); CorMovSave = null;
+            if (Rover.rotating && Rglob.CorRotSave != null) StopCoroutine(Rglob.CorRotSave); Rglob.CorRotSave = null;
+            if (Rover.moving && Rglob.CorMovSave != null) StopCoroutine(Rglob.CorMovSave); Rglob.CorMovSave = null;
             Rover.StopAnim();
             return true;
         } else {
@@ -145,7 +144,7 @@ public class ConsoleInput : MonoBehaviour {
 
 
     public void SubmitName() {
-        if (!StaticVar.gameIsPaused) {
+        if (!Rglob.gameIsPaused) {
             if (consoleInput.text == "\n" || consoleInput.text == "")
                 return;
 

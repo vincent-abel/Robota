@@ -28,22 +28,22 @@ public class UIManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            StaticVar.gameIsPaused = !StaticVar.gameIsPaused;
+            Rglob.gameIsPaused = !Rglob.gameIsPaused;
             PauseGame();
            
         }
     }
     public void ResumeGame() {
         
-        if (StaticVar.gameIsPaused) {
-            StaticVar.gameIsPaused = !StaticVar.gameIsPaused;
-            Debug.Log("In Resume : GamePause ="+StaticVar.gameIsPaused);
+        if (Rglob.gameIsPaused) {
+            Rglob.gameIsPaused = !Rglob.gameIsPaused;
+            Debug.Log("In Resume : GamePause ="+Rglob.gameIsPaused);
             PauseGame();
         }
     }
     void PauseGame() {
          flipActive();
-        if (StaticVar.gameIsPaused) {
+        if (Rglob.gameIsPaused) {
           /*  Rover.ResetState();
                 
             StopAllCoroutines();*/
