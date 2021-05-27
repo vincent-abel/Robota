@@ -19,11 +19,42 @@ public class Rover : MonoBehaviour {
         StopAnim();
     }
 
+    public void forward() {
+        isForward = true;
+        isBack = false;
+        Move();
+    }
+
+    public void back() {
+        isBack = true;
+        isForward = false;
+        Move();
+    }
+
+    public void right() {
+        isRight = true;
+        isLeft = false;
+        Rotate();
+    }
+
+    public void left() {
+        isLeft = true;
+        isRight = false;
+        Rotate();
+    }
+
+    public void Stop() {
+        ResetState();
+        if (rotating) StopRot();
+        if (moving) StopMov();
+        StopAnim();
+    }
+
     public void ResetState() {
         isForward = isLeft = isRight = isBack = moving = false;
     }
 
-    public IEnumerator Rotate(Vector3 axis, float angle, float duration = 1.0f) {
+    public IEnumerator cRotate(Vector3 axis, float angle, float duration = 1.0f) {
         rotating = true;
         if (!moving) StartAnim();
         Quaternion from = ORover.transform.rotation;
@@ -32,7 +63,7 @@ public class Rover : MonoBehaviour {
         to *= Quaternion.Euler(axis);
         float elapsed = 0.0f;
 
-        while ((isLeft || isRight ) && (elapsed < duration)) {
+        while ((isLeft || isRight) && (elapsed < duration)) {
             if (Rglob.gameIsPaused) { yield return null; }
             ORover.transform.rotation = Quaternion.Slerp(from, to, elapsed / duration);
             elapsed += Time.deltaTime;
@@ -45,20 +76,42 @@ public class Rover : MonoBehaviour {
     }
 
     public void Rotate() {
-        Debug.Log("In the rotate");
-        if (isLeft) {
-            if (Rglob.CorRotSave == null) {
-                Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, -90, 0), -90, 5.0f));
-            }
-        }
-        if (isRight) {
-            if (Rglob.CorRotSave == null) {
-                Rglob.CorRotSave = StartCoroutine(Rotate(new Vector3(0, 90, 0), 90, 5.0f));
-            }
-        }
+        if (rotating) StopRot();
+
+        if (isLeft) Rglob.CorRotSave = StartCoroutine(cRotate(new Vector3(0, -90, 0), -90, 5.0f));
+        if (isRight) Rglob.CorRotSave = StartCoroutine(cRotate(new Vector3(0, 90, 0), 90, 5.0f));
     }
 
-    public IEnumerator Move() {
+    public void Rotate(Vector3 axis, float angle, float duration = 1.0f) {
+        if (rotating) StopRot();
+        Rglob.CorRotSave = StartCoroutine(cRotate(axis, angle, duration));
+    }
+
+    public void Move() {
+        if (moving) StopMov();
+        Rglob.CorMovSave = StartCoroutine(cMove());
+    }
+
+    public void Move(float num, float duration) {
+        if (moving) StopMov();
+        if (num > 0) forward();
+        if (num < 0) back();
+        Rglob.CorMovSave = StartCoroutine(cMove(num, duration));
+    }
+
+    public void StopMov() {
+        if (Rglob.CorMovSave != null) {
+            StopCoroutine(Rglob.CorMovSave);
+            Rglob.CorMovSave = null;
+        }
+    }
+    public void StopRot() {
+        if (Rglob.CorRotSave != null) {
+            StopCoroutine(Rglob.CorRotSave);
+            Rglob.CorRotSave = null;
+        }
+    }
+    public IEnumerator cMove() {
         moving = true;
         StartAnim();
         while (isBack || isForward) {
@@ -74,7 +127,7 @@ public class Rover : MonoBehaviour {
     }
 
     /// Override of Move with 2 parameters, Move / Rotating
-    public IEnumerator Move(float num, float duration) {
+    public IEnumerator cMove(float num, float duration) {
         moving = true;
         StartAnim();
         Debug.Log("Moving " + num + "space");
