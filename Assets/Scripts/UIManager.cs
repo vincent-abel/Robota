@@ -13,7 +13,8 @@ public class UIManager : MonoBehaviour {
         UIList.Add("Pause", GameObject.Find("Pause").GetComponent<CanvasGroup>());
         UIList.Add("Main", GameObject.Find("MainCanvas").GetComponent<CanvasGroup>());
         UIList.Add("Obj", GameObject.Find("ObjCanvas").GetComponent<CanvasGroup>());
-        
+        UIList.Add("Win", GameObject.Find("Win").GetComponent<CanvasGroup>());
+        UIList.Add("Lose", GameObject.Find("GameOver").GetComponent<CanvasGroup>());
         /* The inputfield we need to activate / deactivate when flippings UIs. */
         InputField = GameObject.Find("InputField").GetComponent<InputField>();
 
@@ -62,12 +63,23 @@ public class UIManager : MonoBehaviour {
                 ((CanvasGroup)UIList["Obj"]).alpha = 0;
             }
         }
+        if (value == "Win" || value == "Lose")
+        {
+            foreach (DictionaryEntry entry in UIList)
+            {
+                if ((string)entry.Key == value) {
+                    ((CanvasGroup)entry.Value).alpha=1;
+                } else ((CanvasGroup)entry.Value).alpha=0;
+            }
+        }
     }
 
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) Manager("Pause");
         if (Input.GetKeyDown(KeyCode.F1)) Manager("Obj");
+        if (Input.GetKeyDown(KeyCode.F12)) Manager("Win");
+        if (Input.GetKeyDown(KeyCode.F11)) Manager("Lose");
     }
     public void ResumeGame() => Manager("Pause");
     public void PauseGame() => Manager("Pause");
