@@ -10,23 +10,28 @@ public class ConsoleInput : MonoBehaviour {
     public int speed = 10;
     private bool isValidText = false;
 
-
-    // Start is called before the first frame update
-    void Start() {
+    void SetSkyBox() {
         if (RenderSettings.skybox.HasProperty("_Tint"))
             RenderSettings.skybox.SetColor("_Tint", Color.red);
         else if (RenderSettings.skybox.HasProperty("_SkyTint"))
             RenderSettings.skybox.SetColor("_SkyTint", Color.red);
+    }
+
+    void CalculateLine() {
         console.supportRichText = false;
         console.text = "";
         for (int i = 0; i <= 2; i++) { console.text += "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"; }
         Canvas.ForceUpdateCanvases();
         Rglob.GlineCount = console.cachedTextGenerator.lineCount;
-        Debug.Log(Rglob.GlineCount);
         console.text = "";
         console.supportRichText = true;
         consoleInput.ActivateInputField();
-
+    }
+    
+    // Start is called before the first frame update
+    void Start() {
+        SetSkyBox();
+        CalculateLine();
     }
 
     // Update is called once per frame
@@ -37,42 +42,30 @@ public class ConsoleInput : MonoBehaviour {
     bool CheckOrder(string Order) {
         string[] tmp = Order.Split(' ');
         float num = 0.0f;
-        Debug.Log(string.Join(",", tmp));
+        isValidText=true;
         if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP") {
             isValidText = false;
-            return true;
         } else if (tmp[0] == "MOVE") {
-            isValidText = true;
-            if (tmp[1] == "FORWARD")    Rover.forward();
-            else if (tmp[1] == "BACK")  Rover.back();
-            else if (tmp[1] == "LEFT")  Rover.left();
+            if (tmp[1] == "FORWARD") Rover.forward();
+            else if (tmp[1] == "BACK") Rover.back();
+            else if (tmp[1] == "LEFT") Rover.left();
             else if (tmp[1] == "RIGHT") Rover.right();
-            else if (tmp[1] == "STOP")  Rover.Stop();
-            else if (float.TryParse(tmp[1], out num)) Rover.Move(num, 5.0f); 
+            else if (tmp[1] == "STOP") Rover.Stop();
+            else if (float.TryParse(tmp[1], out num)) Rover.Move(num, 5.0f);
             else isValidText = false;
-            return true;
         } else if (tmp[0] == "ROTATE") {
-            isValidText = true;
             if (float.TryParse(tmp[1], out num)) {
                 Rover.Rotate(new Vector3(0, num, 0), num, 5.0f);
-                return true;
             }
         } else if (tmp[0] == "HELP" && tmp.Length < 2) {
             consoleInput.text = "";
-            isValidText = true;
             SubmitString("<color=blue>Welcome in Help !\nMOVE FORWARD|BACK|RIGHT|LEFT\nMOVE XX\nMOVE STOP\nSTOP\nROTATE XX</color>");
             return false;
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
-            isValidText = true;
             Rover.Stop();
-            return true;
         } else {
             isValidText = false;
-            return true;
         }
-
-        Debug.Log(tmp.Length.ToString());
-
         return true;
     }
 

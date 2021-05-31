@@ -8,9 +8,12 @@ public class Rglob {
     public static bool gameIsPaused=false;
     public static Coroutine CorMovSave;
     public static Coroutine CorRotSave;
-    public static Coroutine CorRotWrapper;
+    public static Coroutine CorRotWrapper = null;
     private static int _instructionscount;
     public static Text instructionText;
+    public static bool Lose=false;
+    public static bool Win=false;
+    public static bool WaitforLanding=false;
 
     public static int InstructionsCount {
         get {return _instructionscount;}

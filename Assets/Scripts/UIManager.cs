@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour {
         UIList.Add("Obj", GameObject.Find("ObjCanvas").GetComponent<CanvasGroup>());
         UIList.Add("Win", GameObject.Find("Win").GetComponent<CanvasGroup>());
         UIList.Add("Lose", GameObject.Find("GameOver").GetComponent<CanvasGroup>());
+
         /* The inputfield we need to activate / deactivate when flippings UIs. */
         InputField = GameObject.Find("InputField").GetComponent<InputField>();
 
@@ -63,34 +64,30 @@ public class UIManager : MonoBehaviour {
                 ((CanvasGroup)UIList["Obj"]).alpha = 0;
             }
         }
-        if (value == "Win" || value == "Lose")
-        {
-            foreach (DictionaryEntry entry in UIList)
-            {
+        if (value == "Win" || value == "Lose") {
+            foreach (DictionaryEntry entry in UIList) {
                 if ((string)entry.Key == value) {
-                    ((CanvasGroup)entry.Value).alpha=1;
-                } else ((CanvasGroup)entry.Value).alpha=0;
+                    ((CanvasGroup)entry.Value).alpha = 1;
+                } else ((CanvasGroup)entry.Value).alpha = 0;
             }
         }
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) Manager("Pause");
-        if (Input.GetKeyDown(KeyCode.F1)) Manager("Obj");
-        if (Input.GetKeyDown(KeyCode.F12)) Manager("Win");
-        if (Input.GetKeyDown(KeyCode.F11)) Manager("Lose");
+        if (!Rglob.Lose && !Rglob.Win) {
+            if (Input.GetKeyDown(KeyCode.Escape)) Manager("Pause");
+            if (Input.GetKeyDown(KeyCode.F1)) Manager("Obj");
+            if (Input.GetKeyDown(KeyCode.F12)) Manager("Win");
+            if (Input.GetKeyDown(KeyCode.F11)) Manager("Lose");
+        }
+        if (Rglob.Lose) Manager("Lose");
+        if (Rglob.Win) Manager("Win");
     }
     public void ResumeGame() => Manager("Pause");
     public void PauseGame() => Manager("Pause");
     public void ObjPanel() => Manager("Obj");
     public void MainPanel() => Manager("Main");
 
-    void PauseUnpause() {
-        if (Rglob.gameIsPaused) {
-            Time.timeScale = 0;
-        } else {
-            Time.timeScale = 1;
-        }
-    }
+    void PauseUnpause() => Time.timeScale = (Rglob.gameIsPaused) ? 0 : 1;
 }

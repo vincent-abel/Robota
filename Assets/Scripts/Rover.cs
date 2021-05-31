@@ -12,11 +12,21 @@ public class Rover : MonoBehaviour {
     [SerializeField] public bool moving = false;
     [SerializeField] public bool rotating = false;
     public int speed = 10;
+    List<WheelCollider> Wheels = new List<WheelCollider>();
     [SerializeField] public GameObject ORover;
     // Start is called before the first frame update
 
     private void Awake() {
         StopAnim();
+    }
+
+    void Start() {
+        Wheels.Add(GameObject.Find("RoverWheelFront.L").GetComponent<WheelCollider>());
+        Wheels.Add(GameObject.Find("RoverWheelFront.L.002").GetComponent<WheelCollider>());
+        Wheels.Add(GameObject.Find("RoverWheelFront.L.003").GetComponent<WheelCollider>());
+        Wheels.Add(GameObject.Find("RoverWheelFront.L.004").GetComponent<WheelCollider>());
+        Wheels.Add(GameObject.Find("RoverWheelFront.L.005").GetComponent<WheelCollider>());
+        Wheels.Add(GameObject.Find("RoverWheelFront.L.006").GetComponent<WheelCollider>());
     }
 
     public void forward() {
@@ -54,6 +64,13 @@ public class Rover : MonoBehaviour {
         isForward = isLeft = isRight = isBack = moving = false;
     }
 
+    public IEnumerator WaitInit() {
+        Debug.Log("Started Coroutine at timestamp : " + Time.time);
+        yield return new WaitForSeconds(5.0f);
+         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
+        Rglob.WaitforLanding = true;
+    }
+
     public IEnumerator cRotate(Vector3 axis, float angle, float duration = 1.0f) {
         rotating = true;
         if (!moving) StartAnim();
@@ -84,6 +101,7 @@ public class Rover : MonoBehaviour {
 
     public void Rotate(Vector3 axis, float angle, float duration = 1.0f) {
         if (rotating) StopRot();
+        isLeft = true;
         Rglob.CorRotSave = StartCoroutine(cRotate(axis, angle, duration));
     }
 
@@ -169,5 +187,29 @@ public class Rover : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
+
+    }
+    void FixedUpdate() {
+               Debug.Log("Waiting:"+Rglob.WaitforLanding);
+        if (Rglob.WaitforLanding) {
+            var canifly = 0;
+            WheelHit hit = new WheelHit();
+
+            foreach (WheelCollider wc in Wheels) {
+                
+                    Debug.Log(wc.isGrounded +" "+wc.radius);
+                if (wc.GetGroundHit(out hit))
+                    canifly++;
+            }
+            Debug.Log(canifly);
+            if (canifly <= 3) {
+               Rglob.Lose=true;// Rglob.Lose=true;
+            
+            }
+        } else {
+            Debug.Log("CorRotWrapper:"+Rglob.CorRotWrapper);
+            if (Rglob.CorRotWrapper == null)
+                Rglob.CorRotWrapper = StartCoroutine(WaitInit());
+        }
     }
 }
