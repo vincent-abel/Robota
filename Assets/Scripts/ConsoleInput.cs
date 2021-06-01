@@ -43,7 +43,7 @@ public class ConsoleInput : MonoBehaviour {
         string[] tmp = Order.Split(' ');
         float num = 0.0f;
         isValidText=true;
-        if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP") {
+        if ((tmp.Length > 2 || tmp.Length < 2) && tmp[0] != "HELP" && tmp[0] != "STOP" && tmp[0] != "GATHER") {
             isValidText = false;
         } else if (tmp[0] == "MOVE") {
             if (tmp[1] == "FORWARD") Rover.forward();
@@ -59,10 +59,12 @@ public class ConsoleInput : MonoBehaviour {
             }
         } else if (tmp[0] == "HELP" && tmp.Length < 2) {
             consoleInput.text = "";
-            SubmitString("<color=blue>Welcome in Help !\nMOVE FORWARD|BACK|RIGHT|LEFT\nMOVE XX\nMOVE STOP\nSTOP\nROTATE XX</color>");
+            SubmitString("<color=blue>Welcome in Help !\nMOVE FORWARD|BACK|RIGHT|LEFT\nMOVE XX\nMOVE STOP\nSTOP\nROTATE XX\nGATHER</color>");
             return false;
         } else if (tmp[0] == "STOP" && tmp.Length < 2) {
             Rover.Stop();
+        } else if (tmp[0] == "GATHER" && tmp.Length <2) {
+            Rover.Gather();
         } else {
             isValidText = false;
         }
@@ -85,7 +87,7 @@ public class ConsoleInput : MonoBehaviour {
         return false;
     }
 
-    bool SubmitString(string theString) {
+    public bool SubmitString(string theString) {
         if (console.text.Length > 0) {
 
             string[] tmp = console.text.Split('\n');
