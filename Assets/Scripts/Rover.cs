@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -20,6 +19,7 @@ public class Rover : MonoBehaviour {
     [SerializeField] public GameObject ORover;
     [SerializeField] public TerrainTools TTools;
     [SerializeField] public string[] TerrainName = {"Metal","Regolith"};
+    [SerializeField] public GManager GMan;
     // Start is called before the first frame update
 
     private void Awake() {
@@ -89,7 +89,7 @@ public class Rover : MonoBehaviour {
         if (num < 0) back();
         Rglob.CorMovSave = StartCoroutine(cMove(num, duration));
     }
-
+    /// Gather() Implementation
     public void Gather() 
     {
         if (!isGathering) {
@@ -98,22 +98,21 @@ public class Rover : MonoBehaviour {
         StartGatherAnim();
         Debug.Log("First implementation, Gathering intel");
         TTools.GetTerrainTexture();
-        var iOfA=ArrayUtility.IndexOf(TTools.textureValues,TTools.textureValues.Max());
+        
+        var iOfA=System.Array.IndexOf(TTools.textureValues,TTools.textureValues.Max());
         GameObject.Find("Logs").GetComponent<Text>().text="Log : Found Terrain "+TerrainName[iOfA].ToString();
+        Rglob.ElementsStr = TerrainName[iOfA];
         //StopGatherAnim();
         isGathering=!isGathering;
         }
     }
 
 
-    /// Various Coroutines Implementations
-
-        
+    /// Various Coroutines Implementations      
     public IEnumerator WaitInit() {
         yield return new WaitForSeconds(5.0f);
         Rglob.WaitforLanding = true;
     }
-
     public IEnumerator cRotate(Vector3 axis, float angle, float duration = 1.0f) {
         StopGatherAnim();
         rotating = true;
@@ -135,7 +134,6 @@ public class Rover : MonoBehaviour {
         Rglob.CorRotSave = null;
         if (!moving) StopWheelAnim();
     }
-
     public IEnumerator cMove() {
         StopGatherAnim();
         moving = true;
@@ -151,7 +149,6 @@ public class Rover : MonoBehaviour {
         moving = false;
         StopWheelAnim();
     }
-
     /// Override of Move with 2 parameters, Move / Rotating
     public IEnumerator cMove(float num, float duration) {
         StopGatherAnim();
@@ -174,7 +171,7 @@ public class Rover : MonoBehaviour {
         moving = false;
         StopWheelAnim();
     }
-
+    /// Various Anim Handlers
     public void StartWheelAnim() {
         //Debug.Log("Starting Anim");
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L").GetComponent<Animator>().enabled = true;
@@ -184,7 +181,6 @@ public class Rover : MonoBehaviour {
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.005").GetComponent<Animator>().enabled = true;
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.006").GetComponent<Animator>().enabled = true;
     }
-
     public void StopWheelAnim() {
         //Debug.Log("Stopping Anim");
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L").GetComponent<Animator>().enabled = false;
@@ -195,20 +191,19 @@ public class Rover : MonoBehaviour {
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.006").GetComponent<Animator>().enabled = false;
         
     }
-
     public void StartGatherAnim() {
         /*GameObject.Find("RoverArmLower").GetComponent<Animator>().enabled = true;
         GameObject.Find("RoverArmUpper").GetComponent<Animator>().enabled = true;
         GameObject.Find("RoverArmDrill").GetComponent<Animator>().enabled = true;*/
         GameObject.Find("RoverArmConnector").GetComponent<Animator>().enabled = true;
-        GameObject.Find("RoverArmConnector").GetComponent<Animator>().Play("Gather");
+        GameObject.Find("RoverArmConnector").GetComponent<Animator>().Play("Gather",-1,0);
         
 //        GameObject.Find("RoverArmUpper").GetComponent<Animator>().Play("Gather");
  //       GameObject.Find("RoverArmDrill").GetComponent<Animator>().Play("Gather");
         
     }
-
     public void StopGatherAnim() {
+        GameObject.Find("RoverArmConnector").GetComponent<Animator>().StopPlayback();
         GameObject.Find("RoverArmConnector").GetComponent<Animator>().enabled = false;
 //        GameObject.Find("RoverArmUpper").GetComponent<Animator>().enabled = false;
 //        GameObject.Find("RoverArmDrill").GetComponent<Animator>().enabled = false;

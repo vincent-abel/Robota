@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour {
 
         /* Not very proper but good enough to initialize this here. */
         Rglob.instructionText = GameObject.Find("InstructionText").GetComponent<Text>();
+        Rglob.ElementsText = GameObject.Find("ElementsText").GetComponent<Text>();
         Rglob.InstructionsCount = 0;
     }
 
@@ -91,3 +92,4 @@ public class UIManager : MonoBehaviour {
 
     void PauseUnpause() => Time.timeScale = (Rglob.gameIsPaused) ? 0 : 1;
 }
+
