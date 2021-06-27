@@ -556,7 +556,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130515109}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 6.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 730842665}
@@ -650,7 +650,6 @@ GameObject:
   - component: {fileID: 335783811}
   - component: {fileID: 335783810}
   - component: {fileID: 335783809}
-  - component: {fileID: 335783812}
   - component: {fileID: 335783813}
   m_Layer: 0
   m_Name: Main Camera
@@ -725,18 +724,6 @@ Transform:
   m_Father: {fileID: 730842665}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 27.68, y: 180.18, z: 0}
---- !u!114 &335783812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 335783808}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a35c5cbbf3f89e4dadd21b7ebec78f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &335783813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1672,12 +1659,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730377231}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -1812,12 +1799,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730396893}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -1952,12 +1939,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730553089}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -2131,12 +2118,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730570609}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -2236,12 +2223,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730576297}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -2322,8 +2309,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.21, y: 0.55, z: 2}
-  m_Center: {x: -0.05, y: 0.64, z: -0.67}
+  m_Size: {x: 2.21, y: 0.55, z: 2.25}
+  m_Center: {x: -0.05, y: 0.64, z: -0.36}
 --- !u!1 &730586777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,12 +2375,12 @@ WheelCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730594325}
   m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.11
+  m_Radius: 0.09
   m_SuspensionSpring:
-    spring: 1
-    damper: 12
-    targetPosition: 0
-  m_SuspensionDistance: 0.2
+    spring: 20000
+    damper: 1200
+    targetPosition: 0.9
+  m_SuspensionDistance: 0.05
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.25
@@ -6328,6 +6315,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868725180}
   m_CullTransparentMesh: 1
+--- !u!1 &1923137720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1923137723}
+  - component: {fileID: 1923137722}
+  - component: {fileID: 1923137721}
+  m_Layer: 0
+  m_Name: Terrain_(0.0, 0.0, -1000.0)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!154 &1923137721
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923137720}
+  m_Material: {fileID: 0}
+  m_Enabled: 1
+  m_TerrainData: {fileID: 15600000, guid: f199e0a650e86264da473b34a5ec666f, type: 2}
+  m_EnableTreeColliders: 1
+--- !u!218 &1923137722
+Terrain:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923137720}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_TerrainData: {fileID: 15600000, guid: f199e0a650e86264da473b34a5ec666f, type: 2}
+  m_TreeDistance: 5000
+  m_TreeBillboardDistance: 50
+  m_TreeCrossFadeLength: 5
+  m_TreeMaximumFullLODCount: 50
+  m_DetailObjectDistance: 80
+  m_DetailObjectDensity: 1
+  m_HeightmapPixelError: 5
+  m_SplatMapDistance: 1000
+  m_HeightmapMaximumLOD: 0
+  m_ShadowCastingMode: 2
+  m_DrawHeightmap: 1
+  m_DrawInstanced: 0
+  m_DrawTreesAndFoliage: 1
+  m_ReflectionProbeUsage: 1
+  m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
+  m_BakeLightProbesForTrees: 1
+  m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 1
+  m_ScaleInLightmap: 0.0256
+  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
+  m_GroupingID: 0
+  m_RenderingLayerMask: 1
+  m_AllowAutoConnect: 1
+--- !u!4 &1923137723
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923137720}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1000}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1941092586
 GameObject:
   m_ObjectHideFlags: 0

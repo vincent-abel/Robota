@@ -18,7 +18,7 @@ public class Rover : MonoBehaviour {
     List<WheelCollider> Wheels = new List<WheelCollider>();
     [SerializeField] public GameObject ORover;
     [SerializeField] public TerrainTools TTools;
-    [SerializeField] public string[] TerrainName = {"Metal","Regolith"};
+    [SerializeField] public string[] TerrainName = { "Metal", "Regolith" };
     [SerializeField] public GManager GMan;
     // Start is called before the first frame update
 
@@ -38,11 +38,11 @@ public class Rover : MonoBehaviour {
         TTools.SetTerrain(GameObject.Find("Terrain").GetComponent<Terrain>());
     }
     /// Settings states
-    public void forward() {     isForward = true;   isBack = false;     Move();     }
-    public void back() {        isBack = true;      isForward = false;  Move();     }
-    public void right() {       isRight = true;     isLeft = false;     Rotate();   }
-    public void left() {        isLeft = true;      isRight = false;    Rotate();   }
-    public void ResetState() {  isForward = isLeft = isRight = isBack = moving = false; }
+    public void forward() { isForward = true; isBack = false; Move(); }
+    public void back() { isBack = true; isForward = false; Move(); }
+    public void right() { isRight = true; isLeft = false; Rotate(); }
+    public void left() { isLeft = true; isRight = false; Rotate(); }
+    public void ResetState() { isForward = isLeft = isRight = isBack = moving = false; }
 
     /// Stopping movements
     public void Stop() {
@@ -54,8 +54,12 @@ public class Rover : MonoBehaviour {
     }
     /// implementation for global movement stopping
     public void StopMov() {
+
         if (Rglob.CorMovSave != null) {
             StopCoroutine(Rglob.CorMovSave);
+
+
+
             Rglob.CorMovSave = null;
         }
     }
@@ -82,6 +86,7 @@ public class Rover : MonoBehaviour {
     public void Move() {
         if (moving) StopMov();
         Rglob.CorMovSave = StartCoroutine(cMove());
+
     }
     public void Move(float num, float duration) {
         if (moving) StopMov();
@@ -90,20 +95,19 @@ public class Rover : MonoBehaviour {
         Rglob.CorMovSave = StartCoroutine(cMove(num, duration));
     }
     /// Gather() Implementation
-    public void Gather() 
-    {
+    public void Gather() {
         if (!isGathering) {
-        isGathering=true;
-        Stop();
-        StartGatherAnim();
-        Debug.Log("First implementation, Gathering intel");
-        TTools.GetTerrainTexture();
-        
-        var iOfA=System.Array.IndexOf(TTools.textureValues,TTools.textureValues.Max());
-        GameObject.Find("Logs").GetComponent<Text>().text="Log : Found Terrain "+TerrainName[iOfA].ToString();
-        Rglob.ElementsStr = TerrainName[iOfA];
-        //StopGatherAnim();
-        isGathering=!isGathering;
+            isGathering = true;
+            Stop();
+            StartGatherAnim();
+            Debug.Log("First implementation, Gathering intel");
+            TTools.GetTerrainTexture();
+
+            var iOfA = System.Array.IndexOf(TTools.textureValues, TTools.textureValues.Max());
+            GameObject.Find("Logs").GetComponent<Text>().text = "Log : Found Terrain " + TerrainName[iOfA].ToString();
+            Rglob.ElementsStr = TerrainName[iOfA];
+            //StopGatherAnim();
+            isGathering = !isGathering;
         }
     }
 
@@ -140,9 +144,27 @@ public class Rover : MonoBehaviour {
         StartWheelAnim();
         while (isBack || isForward) {
             //if (!Rglob.gameIsPaused) { Debug.Log("Catch Them All"); }
+
+
             if (Rglob.gameIsPaused) { yield return null; }
-            if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.forward * speed, Time.deltaTime);
-            if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.forward * speed, Time.deltaTime);
+
+            if (isBack) {
+                foreach (var item in Wheels) {
+                    if (ORover.GetComponent<Rigidbody>().velocity.magnitude > 30) item.motorTorque = 0;
+                    else
+                        item.motorTorque = 5000;
+                }
+            }
+            if (isForward) {
+                foreach (var item in Wheels) {
+                    if (ORover.GetComponent<Rigidbody>().velocity.magnitude > 30) item.motorTorque = 0;
+                    else
+                        item.motorTorque = -5000;
+                }
+            }
+
+            /*if (isBack) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + ORover.transform.forward * speed, Time.deltaTime);
+            if (isForward) ORover.transform.position = Vector3.Lerp(ORover.transform.position, ORover.transform.position + -ORover.transform.forward * speed, Time.deltaTime);*/
 
             yield return null;
         }
@@ -189,44 +211,75 @@ public class Rover : MonoBehaviour {
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.004").GetComponent<Animator>().enabled = false;
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.005").GetComponent<Animator>().enabled = false;
         ORover.transform.Find("RoverBody/RoverWheels.L/RoverWheelFront.L.006").GetComponent<Animator>().enabled = false;
-        
+
     }
     public void StartGatherAnim() {
         /*GameObject.Find("RoverArmLower").GetComponent<Animator>().enabled = true;
         GameObject.Find("RoverArmUpper").GetComponent<Animator>().enabled = true;
         GameObject.Find("RoverArmDrill").GetComponent<Animator>().enabled = true;*/
         GameObject.Find("RoverArmConnector").GetComponent<Animator>().enabled = true;
-        GameObject.Find("RoverArmConnector").GetComponent<Animator>().Play("Gather",-1,0);
-        
-//        GameObject.Find("RoverArmUpper").GetComponent<Animator>().Play("Gather");
- //       GameObject.Find("RoverArmDrill").GetComponent<Animator>().Play("Gather");
-        
+        GameObject.Find("RoverArmConnector").GetComponent<Animator>().Play("Gather", -1, 0);
+
+        //        GameObject.Find("RoverArmUpper").GetComponent<Animator>().Play("Gather");
+        //       GameObject.Find("RoverArmDrill").GetComponent<Animator>().Play("Gather");
+
     }
     public void StopGatherAnim() {
         GameObject.Find("RoverArmConnector").GetComponent<Animator>().StopPlayback();
         GameObject.Find("RoverArmConnector").GetComponent<Animator>().enabled = false;
-//        GameObject.Find("RoverArmUpper").GetComponent<Animator>().enabled = false;
-//        GameObject.Find("RoverArmDrill").GetComponent<Animator>().enabled = false;
+        //        GameObject.Find("RoverArmUpper").GetComponent<Animator>().enabled = false;
+        //        GameObject.Find("RoverArmDrill").GetComponent<Animator>().enabled = false;
     }
     // Update is called once per frame
     void Update() {
+ /*       foreach (var item in Wheels) {
+            Quaternion q;
+            Vector3 p;
+            item.GetWorldPose(out p, out q);
+            Debug.Log(' ' +item.transform.childCount);
+            if (item.transform.childCount >= 0) {
+            item.transform.GetChild(0).position = p;
+            item.transform.GetChild(0).rotation = q;
+            }
+        }*/
 
     }
     void FixedUpdate() {
         //    Debug.Log("Waiting:"+Rglob.WaitforLanding);
+        Debug.Log("Magnitude of velocity : " + ORover.GetComponent<Rigidbody>().velocity.magnitude);
+        if (ORover.GetComponent<Rigidbody>().velocity.magnitude < 0.2) {
+            StopWheelAnim();
+        } else {
+            StartWheelAnim();
+        }
+
+        if (!moving) {
+            foreach (var item in Wheels) {
+                item.brakeTorque = Mathf.Clamp(Mathf.Abs(item.rpm) * 8f, 200, 8000);
+                //Debug.Log("BRAKE RPPM: "+item.rpm);
+            }
+        }
+        if (moving) {
+            foreach (var item in Wheels) {
+                item.brakeTorque = 0;
+                //Debug.Log("UNBRAKE RPPM : "+item.rpm);
+            }
+
+        }
         if (Rglob.WaitforLanding) {
             var canifly = 0;
             WheelHit hit = new WheelHit();
 
             foreach (WheelCollider wc in Wheels) {
 
-               // Debug.Log(wc.isGrounded + " " + wc.radius);
-                if (wc.GetGroundHit(out hit))
+                //Debug.Log(wc.isGrounded + " " + wc.radius + " " +wc.name);
+                if (wc.GetGroundHit(out hit) || wc.isGrounded)
                     canifly++;
+                //Debug.Log(wc.isGrounded + " " + wc.radius);
             }
             //Debug.Log(canifly);
-            if (canifly <= 3) {
-                Rglob.Lose = true;// Rglob.Lose=true;
+            if (canifly <= 2) {
+                Debug.Log("YOU LOSE : " + canifly);//Rglob.Lose = true;// Rglob.Lose=true;
 
             }
         } else {
