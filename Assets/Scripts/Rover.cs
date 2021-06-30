@@ -110,8 +110,6 @@ public class Rover : MonoBehaviour {
             isGathering = !isGathering;
         }
     }
-
-
     /// Various Coroutines Implementations      
     public IEnumerator WaitInit() {
         yield return new WaitForSeconds(5.0f);
@@ -232,15 +230,17 @@ public class Rover : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
- /*       foreach (var item in Wheels) {
+       
+/*        foreach (var item in Wheels) {
             Quaternion q;
             Vector3 p;
             item.GetWorldPose(out p, out q);
             Debug.Log(' ' +item.transform.childCount);
-            if (item.transform.childCount >= 0) {
-            item.transform.GetChild(0).position = p;
-            item.transform.GetChild(0).rotation = q;
-            }
+            Transform shapeTransform = item.transform.parent.transform.GetChild(0);
+            shapeTransform.position = p;
+            // item.transform.parent.transform.GetChild(0).position = p;
+             shapeTransform.rotation = q;
+            // item.transform.parent.transform.GetChild(0).rotation = q;
         }*/
 
     }
@@ -278,9 +278,8 @@ public class Rover : MonoBehaviour {
                 //Debug.Log(wc.isGrounded + " " + wc.radius);
             }
             //Debug.Log(canifly);
-            if (canifly <= 2) {
-                Debug.Log("YOU LOSE : " + canifly);//Rglob.Lose = true;// Rglob.Lose=true;
-
+            if (canifly <= 2 && ORover.GetComponent<Rigidbody>().velocity.magnitude < 0.2) {
+                Rglob.Lose = true;
             }
         } else {
             //Debug.Log("CorRotWrapper:"+Rglob.CorRotWrapper);
